@@ -3,7 +3,8 @@ import os
 import sys
 import time
 import MySQLdb
-
+from redis import Redis
+from rq import Worker, Queue, Connection
 
 def get_cursor():
     """Returns database cursor"""
@@ -18,14 +19,33 @@ def get_cursor():
         sys.exit("Error: Failed connecting to database")
     return mydb.cursor()
 
-cursor = get_cursor()
+def get_redis():
+    """Returns redis connection"""
+    try:
+        redis = Redis(host='redis', port=6379)
+    except Redis.DoesNotExist as error:
+        print(error)
+        sys.exit("Error: Faild connecting to redis")
+    return redis
+
 
 def get_tasks():
+    cursor = get_cursor()
     """Returns new tasks from databse (table tasks)"""
-    # not finished nor tested yet
     try:
-        cursor.execute("SELECT * FROM tasks")
+            cursor.execute("SELECT * FROM tasks")
     except MySQLdb.Error as error:
         print(error)
         sys.exit("Error:Failed getting new tasks from database")
-    return cursor.fetchall()
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
+
+if __name__ == '__main__':
+    time.sleep(5)
+    r = get_redis()
+    q = Queue('get_tasks', connection = r)
+    with Connection(r):
+        worker = Worker([q], connection=r, name = 'get_tasks')
+        worker.work()
