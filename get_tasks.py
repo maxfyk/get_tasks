@@ -33,7 +33,7 @@ def get_tasks():
     cursor = get_cursor()
     """Returns new tasks from databse (table tasks)"""
     try:
-            cursor.execute("SELECT * FROM tasks")
+        cursor.execute("SELECT * FROM tasks")
     except MySQLdb.Error as error:
         print(error)
         sys.exit("Error:Failed getting new tasks from database")
@@ -45,7 +45,7 @@ def get_tasks():
 if __name__ == '__main__':
     time.sleep(5)
     r = get_redis()
-    q = Queue('get_tasks', connection = r)
+    q = Queue('get_tasks', connection=r)
     with Connection(r):
-        worker = Worker([q], connection=r, name = 'get_tasks')
+        worker = Worker([q], connection=r, name='get_tasks')
         worker.work()
