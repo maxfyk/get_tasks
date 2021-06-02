@@ -8,7 +8,7 @@ from methods.connection import get_redis, get_cursor
 
 
 def get_tasks():
-    cursor = get_cursor()
+    cursor, _ = get_cursor()
     """Returns new tasks from databse (table tasks)"""
     try:
         cursor.execute("SELECT * FROM tasks")
