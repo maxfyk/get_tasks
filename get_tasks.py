@@ -11,6 +11,7 @@ def get_tasks():
     cursor, _ = get_cursor()
     """Returns new tasks from databse (table tasks)"""
     try:
+        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'sadsadsad', NOW())")
         cursor.execute("SELECT * FROM tasks")
     except MySQLdb.Error as error:
         print(error)
