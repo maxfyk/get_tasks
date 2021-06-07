@@ -8,14 +8,21 @@ from methods.connection import get_redis, get_cursor
 
 
 def get_tasks():
-    cursor, _ = get_cursor()
+    cursor, db = get_cursor()
     """Returns new tasks from databse (table tasks)"""
+    # insert some tasks for testing
     try:
-        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'sadsadsad', NOW())")
+        cursor.execute("truncate tasks")
+        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (1, 'UCXuqSBlHAE6Xw-yeJA0Tunw', NOW())")
+        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'UCdBK94H6oZT2Q7l0-b0xmMg', NOW())")
+        db.commit()
+    except Exception as e:
+        print(e)
+    try:
         cursor.execute("SELECT * FROM tasks")
     except MySQLdb.Error as error:
         print(error)
-        sys.exit("Error:Failed getting new tasks from database")
+        # sys.exit("Error:Failed getting new tasks from database")
     data = cursor.fetchall()
     cursor.close()
     return data
