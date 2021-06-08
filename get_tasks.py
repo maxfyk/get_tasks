@@ -9,6 +9,9 @@ from methods.connection import get_redis, get_cursor
 
 def get_tasks():
     cursor, db = get_cursor()
+    if not cursor or not db:
+        # log that failed getting cursor
+        return False
     """Returns new tasks from databse (table tasks)"""
     # insert some tasks for testing
     try:
@@ -22,6 +25,8 @@ def get_tasks():
         cursor.execute("SELECT * FROM tasks")
     except MySQLdb.Error as error:
         print(error)
+        # Log
+        return False
         # sys.exit("Error:Failed getting new tasks from database")
     data = cursor.fetchall()
     cursor.close()
