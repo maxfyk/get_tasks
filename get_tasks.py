@@ -17,8 +17,11 @@ def get_tasks():
     # insert some tasks for testing
     try:
         cursor.execute("truncate tasks")
-        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (1, 'UCngjw6cGfzm6bUIDuhGMntg', NOW())")
-        cursor.execute("INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'UC2oSO2sCto3bW0hvjXYMMiA', NOW())")
+        # Test my channel only
+        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UCngjw6cGfzm6bUIDuhGMntg', NOW())")
+        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UC2oSO2sCto3bW0hvjXYMMiA', NOW())")
+        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UCf34x101_ycTUjAQ2SxMRWA', NOW())")
+        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UC7B-nApg76kClvW-YBYezQQ', NOW())")
         db.commit()
     except Exception as e:
         print(e)
