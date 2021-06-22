@@ -8,25 +8,24 @@ from methods.connection import get_redis, get_cursor
 
 r = get_redis()
 
-def get_tasks():
+def get_tasks(type = "ALL", col="", value=""):
+    """Returns new tasks from databse (table tasks)"""
     cursor, db = get_cursor()
     if not cursor or not db:
         # log that failed getting cursor
         return False
-    """Returns new tasks from databse (table tasks)"""
-    # insert some tasks for testing
+    q = "SELECT * FROM tasks "
+    if type is not None:
+        if type == "WHERE" and col and value:
+            value = value.replace(";", "")
+            value = value.replace("'", "''")
+            q += f"""WHERE {col} = '{value}'"""
+        elif type == "ALL":
+            pass
+        else:
+            return False
     try:
-        cursor.execute("truncate tasks")
-        # Test my channel only
-        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UCngjw6cGfzm6bUIDuhGMntg', NOW())")
-        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UC2oSO2sCto3bW0hvjXYMMiA', NOW())")
-        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UCf34x101_ycTUjAQ2SxMRWA', NOW())")
-        cursor.execute("INSERT INTO  tasks (channel_id, added_on) VALUES   ('UC7B-nApg76kClvW-YBYezQQ', NOW())")
-        db.commit()
-    except Exception as e:
-        print(e)
-    try:
-        cursor.execute("SELECT * FROM tasks")
+        cursor.execute(q)
     except MySQLdb.Error as error:
         print(error)
         # Log
